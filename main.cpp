@@ -6,7 +6,7 @@ using namespace std;
 class Jug {
     private:
         int size, level;
-
+        
     public:
         Jug() {};
         //~Jug() { cout << "Jug just got deleted from mem"; };
@@ -101,6 +101,7 @@ int main() {
     array<Jug, Node::getJugCount()> startingJugs = {Jug(10), Jug(3), Jug(4)};
 
     startingJugs[0].setLevel(3);
+    startingJugs[1].fill();
 
     Node startingPoint = Node(startingJugs);
 
