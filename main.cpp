@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <unordered_set>
 
 using namespace std;
 
@@ -11,8 +12,8 @@ class Jug {
         Jug() {};
         //~Jug() { cout << "Jug just got deleted from mem"; };
         Jug(int); 
-        int getLevel() { return level; }
-        int getSize() { return size; }
+        int getLevel() const { return level; }
+        int getSize() const { return size; }
         void setLevel(int _level) { level=_level; }
         void pour(Jug*);
         void empty() { setLevel(0); }
@@ -23,6 +24,7 @@ Jug::Jug(int size) {
     this->size = size;
     this->level = 0;
 }
+
 
 void Jug::pour(Jug *recvJug) {
     if (recvJug->level + this->getLevel() > recvJug->size) {  // if the water would overflow
@@ -47,13 +49,13 @@ class Node {
         //~Node() { cout << "Node just got deleted"; };
         Node(array<Jug, jugCount> &jugs, Node*);
         Node(array<Jug, jugCount> &_jugs) { jugs = _jugs; visited = false; };
-        bool equals(Node*);
-        array<Jug, jugCount> getJugs() { return jugs; };
-        array<Node*, jugCount*jugCount> getChildren() { return children; };  
+        array<Jug, jugCount> getJugs() const { return jugs; };
+        array<Node*, jugCount*jugCount> getChildren() const { return children; };  
         bool visited;
         void genChildren();
         void print();
         constexpr static size_t getJugCount() { return Node::jugCount; };
+        bool equals(const Node*);
 };
 
 Node::Node(array<Jug, jugCount> &jugs, Node *parent) {
@@ -62,7 +64,7 @@ Node::Node(array<Jug, jugCount> &jugs, Node *parent) {
     this->visited = false;
 }
 
-bool Node::equals(Node *otherNode) {
+bool Node::equals (const Node *otherNode) {
     for (size_t i = 0; i < this->jugs.size(); i++) {  // for each element in the array
         if (this->jugs[i].getLevel() != otherNode->getJugs()[i].getLevel()) {
             return false;  // the jugs do not match therefore theyre not identical
@@ -82,11 +84,32 @@ void Node::genChildren() {
             else{ 
                 newJugs[i].pour(&newJugs[j]);
             }
-            //todo THIS NEEDS TO BE BE DELETED ONCE ITS FINISHED OR A MEMORY LEAK WILL OCCUR
             this->children[counter++] = new Node(newJugs, this);  // create a new node with the new jugs and the parent as this 
         }
     }
 }
+
+struct JugListHasher {
+    inline size_t operator()(const array<Jug, Node::getJugCount()> &jugs) const {
+        int sumLevel = 0;
+        for (size_t i = 0; i < jugs.size(); i++) {
+            sumLevel += jugs[i].getLevel();
+        }
+        return sumLevel;  
+    }
+};
+
+struct JugListEqual {
+public:
+    bool operator()(const array<Jug, Node::getJugCount()> & list1, const array<Jug, Node::getJugCount()> & list2) const {
+        for (size_t i = 0; i < list1.size(); i++) {  // for each element in the array
+        if (list1[i].getLevel() != list2[i].getLevel()) {
+            return false;  // the jugs do not match therefore theyre not identical
+        }
+    }
+    return true;
+    }
+};
 
 void Node::print() {
     for (size_t i = 0; i < this->jugs.size(); i++)
@@ -104,6 +127,17 @@ int main() {
     startingJugs[1].fill();
 
     Node startingPoint = Node(startingJugs);
+
+    array<Jug, Node::getJugCount()> startingJugs2 = {Jug(10), Jug(3), Jug(4)};
+
+    startingJugs2[0].setLevel(4);
+    startingJugs2[1].fill();
+
+    Node startingPoint2 = Node(startingJugs2);
+
+    unordered_set<array<Jug, 3>, JugListHasher, JugListEqual> uniqueJugs = {startingPoint.getJugs()};
+
+    cout << uniqueJugs.count(startingPoint2.getJugs()) << endl;
 
     startingPoint.genChildren();
 
