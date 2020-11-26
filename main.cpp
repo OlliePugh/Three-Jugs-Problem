@@ -56,6 +56,30 @@ class Node {
         void print();
         constexpr static size_t getJugCount() { return Node::jugCount; };
         bool equals(const Node*);
+
+        struct hash;
+        struct equal;  // used for checking equivalence
+};
+
+struct Node::hash {
+    inline size_t operator()(const array<Jug, jugCount> &jugs) const {
+        int sumLevel = 0;
+        for (size_t i = 0; i < jugs.size(); i++) {
+            sumLevel += jugs[i].getLevel();
+        }
+        return sumLevel;  
+    }
+};
+
+struct Node::equal {
+    bool operator()(const array<Jug, jugCount> & list1, const array<Jug, jugCount> & list2) const {
+        for (size_t i = 0; i < list1.size(); i++) {  // for each element in the array
+            if (list1[i].getLevel() != list2[i].getLevel()) {
+                return false;  // the jugs do not match therefore theyre not identical
+            }
+        }
+        return true;
+    }
 };
 
 Node::Node(array<Jug, jugCount> &jugs, Node *parent) {
@@ -89,28 +113,6 @@ void Node::genChildren() {
     }
 }
 
-struct JugListHasher {
-    inline size_t operator()(const array<Jug, Node::getJugCount()> &jugs) const {
-        int sumLevel = 0;
-        for (size_t i = 0; i < jugs.size(); i++) {
-            sumLevel += jugs[i].getLevel();
-        }
-        return sumLevel;  
-    }
-};
-
-struct JugListEqual {
-public:
-    bool operator()(const array<Jug, Node::getJugCount()> & list1, const array<Jug, Node::getJugCount()> & list2) const {
-        for (size_t i = 0; i < list1.size(); i++) {  // for each element in the array
-        if (list1[i].getLevel() != list2[i].getLevel()) {
-            return false;  // the jugs do not match therefore theyre not identical
-        }
-    }
-    return true;
-    }
-};
-
 void Node::print() {
     for (size_t i = 0; i < this->jugs.size(); i++)
     {
@@ -135,7 +137,7 @@ int main() {
 
     Node startingPoint2 = Node(startingJugs2);
 
-    unordered_set<array<Jug, 3>, JugListHasher, JugListEqual> uniqueJugs = {startingPoint.getJugs()};
+    unordered_set<array<Jug, 3>, Node::hash, Node::equal> uniqueJugs = {startingPoint.getJugs()};
 
     cout << uniqueJugs.count(startingPoint2.getJugs()) << endl;
 
