@@ -2,6 +2,7 @@
 #define _NODEH_
 
 #include <array>
+#include <vector>
 #include "jug.h"
 
 using namespace std;
@@ -11,7 +12,7 @@ class Node {
     private:
         static const int jugCount = 3;
         array<Jug, jugCount> jugs;  // point to array of jugs
-        array<Node*, jugCount*jugCount> children;
+        vector<Node*> children;
         Node* parent;  // pointer to parent
 
     public:
@@ -19,13 +20,13 @@ class Node {
         Node(array<Jug, jugCount> &jugs, Node*);
         Node(array<Jug, jugCount> &_jugs) { jugs = _jugs;};
         array<Jug, jugCount> getJugs() const { return jugs; };
-        array<Node*, jugCount*jugCount> getChildren() const { return children; };  
+        vector<Node*> getChildren() const { return children; };  
         void genChildren();
         std::string toString();
         constexpr static size_t getJugCount() { return Node::jugCount; };
         bool operator==(const Node&) const;
         bool containsChild(Node*);
-        bool addChild(Node*, int);
+        bool addChild(Node*);
 };
 
 namespace std {
