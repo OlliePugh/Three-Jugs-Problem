@@ -7,6 +7,7 @@
 using namespace std;
 
 class Node {
+    // Stores the combination of jugs in the graph
     private:
         static const int jugCount = 3;
         array<Jug, jugCount> jugs;  // point to array of jugs
@@ -15,9 +16,8 @@ class Node {
 
     public:
         Node() {};
-        //~Node() { cout << "Node just got deleted"; };
         Node(array<Jug, jugCount> &jugs, Node*);
-        Node(array<Jug, jugCount> &_jugs) { jugs = _jugs; visited = false; };
+        Node(array<Jug, jugCount> &_jugs) { jugs = _jugs;};
         array<Jug, jugCount> getJugs() const { return jugs; };
         array<Node*, jugCount*jugCount> getChildren() const { return children; };  
         void genChildren();
