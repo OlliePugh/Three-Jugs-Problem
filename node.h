@@ -20,7 +20,6 @@ class Node {
         Node(array<Jug, jugCount> &_jugs) { jugs = _jugs; visited = false; };
         array<Jug, jugCount> getJugs() const { return jugs; };
         array<Node*, jugCount*jugCount> getChildren() const { return children; };  
-        bool visited;
         void genChildren();
         std::string toString();
         constexpr static size_t getJugCount() { return Node::jugCount; };

@@ -7,33 +7,42 @@
 
 using namespace std;
 
+void DFS(unordered_set<Node>* terminals, Node currentNode) {
+    if (terminals->count(currentNode) == 0) {
+        terminals->insert(currentNode);  // add the node to the set
+    }
+    else {
+        return;  // stop going down this path and pursue the next path
+    }
+    currentNode.genChildren();  // generate the chidren for that node
+
+    for (size_t i = 0; i < currentNode.getChildren().size(); i++) {
+        Node* child = currentNode.getChildren()[i];
+        if (terminals->count(*child) == 0) {
+            DFS(terminals, *child);
+        }
+    }
+    
+}
+
 int main() {
+    int jugSizes[3];
+    
+    for (size_t i = 0; i < sizeof(jugSizes)/sizeof(jugSizes[0]); i++)
+    {
+        cout << "Please enter a size for jug " << i << " ";
+        cin >> jugSizes[i];
+    }
 
-    array<Jug, Node::getJugCount()> startingJugs = {Jug(10), Jug(3), Jug(4)};
-
-    startingJugs[0].setLevel(3);
-    startingJugs[1].fill();
+    array<Jug, Node::getJugCount()> startingJugs = {Jug(jugSizes[0]), Jug(jugSizes[1]), Jug(jugSizes[2])};
 
     Node startingPoint = Node(startingJugs);
 
-    array<Jug, Node::getJugCount()> startingJugs2 = {Jug(10), Jug(3), Jug(4)};
+    unordered_set<Node> uniqueJugs;
 
-    startingJugs2[0].setLevel(3);
-    startingJugs2[1].fill();
+    DFS(&uniqueJugs, startingPoint);
 
-    Node startingPoint2 = Node(startingJugs2);
+    cout << uniqueJugs.size() << endl;
 
-    unordered_set<Node> uniqueJugs = {startingPoint};
-
-    cout << uniqueJugs.count(startingPoint2) << endl;
-
-    startingPoint.genChildren();
-
-    array<Node*, Node::getJugCount() * Node::getJugCount()> children = startingPoint.getChildren();
-
-    for (size_t i = 0; i < startingPoint.getChildren().size(); i++) {
-        cout << children[i]->toString() << endl;
-        children[i]->genChildren();
-    }
     return 0;
 }
