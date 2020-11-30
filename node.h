@@ -24,6 +24,8 @@ class Node {
         std::string toString();
         constexpr static size_t getJugCount() { return Node::jugCount; };
         bool operator==(const Node&) const;
+        bool containsChild(Node*);
+        bool addChild(Node*, int);
 };
 
 namespace std {
