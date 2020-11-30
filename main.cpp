@@ -26,7 +26,7 @@ void DFS(unordered_set<Node>* terminals, Node currentNode) {
 }
 
 int main() {
-    array<int, Node::getJugCount()> jugSizes;  // store the user defined jug sizes
+    array<int, Node::getJugCount()> jugSizes = {8,5,3};  // store the user defined jug sizes
     for (size_t i = 0; i < jugSizes.size(); i++)
     {
         cout << "Please enter a size for jug " << i+1 << " ";

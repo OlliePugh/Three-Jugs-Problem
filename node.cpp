@@ -42,7 +42,7 @@ void Node::genChildren() {  // generate the children of the node
 bool Node::containsChild(Node *node) {
     for (size_t i = 0; i < this->children.size(); i++)
     {
-        if (this->children[i] == node ){
+        if (*this->children[i] == *node ){
             return true;
         }
         else{
