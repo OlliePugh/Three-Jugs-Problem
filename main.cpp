@@ -12,7 +12,6 @@ void DFS(unordered_set<Node>* terminals, Node currentNode) {
         terminals->insert(currentNode);  // add the node to the set
     }
     else {  // we have already seen this combination of jugs
-        delete &currentNode;  // no longer needs to be stored
         return;  // stop going down this path and pursue the next path
     }
     currentNode.genChildren();  // generate the chidren for that node
