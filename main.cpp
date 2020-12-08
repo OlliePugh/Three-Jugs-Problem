@@ -49,6 +49,6 @@ int main() {
     DFS(&uniqueJugs, startingPoint);  // start the recursive function
 
     cout << uniqueJugs.size() << endl;  // output the amount of unique jug combinations generated
-
+    system("pause");  // show the output to the user and wait for them to exit
     return 0;
 }
