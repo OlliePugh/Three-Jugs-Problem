@@ -45,11 +45,8 @@ bool Node::containsChild(Node *node) {
         if (*this->children[i] == *node ){
             return true;
         }
-        else{
-            return false;
-        }
     }
-    
+    return false;
 }
 
 bool Node::addChild(Node *node) {  // to reduce duplicates in the list of children
